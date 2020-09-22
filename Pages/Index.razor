@@ -1,0 +1,33 @@
+﻿@page "/"
+@using PieGenerator.Drawing
+
+<svg height=@(OurPie.Radius*2) width=@(OurPie.Radius*2) xmlns="http://www.w3.org/2000/svg">
+    @foreach (var slice in OurPie.Slices)
+    {
+        <polygon points=@slice.Points() class="pie" style="fill:@(slice.BackgroundColor);stroke:@(slice.EdgeColor);z-index:1;" />
+        <text>
+            <text x="@slice.TextX" y="@slice.TextY" text-anchor="middle" lengthAdjust="spacingAndGlyphs" fill="white" style="font-size:@(Math.Min(OurPie.Radius/10, Math.Sin(Math.Min(slice.Angle,Math.PI*0.5))*OurPie.Radius/3));font-weight:bold;">@(slice.Percent)%</text>
+        </text>
+    }
+</svg>
+<br />
+@foreach (var slice in OurPie.Slices)
+{
+    <div style="height:18px;width:18px;background-color:@slice.BackgroundColor;display:inline-block;"></div>
+    <input type="range" min="0" max="100" step="1" @bind=slice.Percent @bind:event="oninput" class="slider">
+    <input type="number" min="0" max="100" @bind=slice.Percent @bind:event="oninput">
+    <br />
+}
+@code {
+    protected Pie OurPie = new Pie(400, 4);
+
+    protected override void OnInitialized()
+    {
+        OurPie.AddSliceByPercent(10);
+        OurPie.AddSliceByPercent(10);
+        OurPie.AddSliceByPercent(10);
+        OurPie.AddSliceByPercent(10);
+        OurPie.AddSliceByPercent(10);
+        OurPie.AddSliceByPercent(10);
+    }
+}
